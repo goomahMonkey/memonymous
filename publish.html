@@ -7,14 +7,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Maven+Pro:wght@400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 
 <body>
-<p class="space"></p>
-<form action="/upload-destination" method="POST" enctype="multipart/form-data">
+<p>By uploading a file by pressing the gray button labelled upload, you agree to irrevocably release this file under Creative Commons Zero.</p>
+<p class = 'space'></p>
+<form action="upload-destination" method="POST" enctype="multipart/form-data">
     <label for="fileChooser"><p>Select a file to upload:</p></label>
     <input type="file" id="fileChooser" name="uploadedFile">
-    <button type="submit"><p>Upload</p></button>
+    <button type="submit" id = "uploadForm"><p>Upload</p></button>
 </form>
+<script>
+    $(document).ready(function() {
+        function checkExtension(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            const allowedExtensions = ['pdf'];
+            alert(extension);
+            return allowedExtensions.includes(extension);
+        }
+        $('#uploadForm').on('submit', function (e) {
+            if (!(checkExtension($("#fileChooser")[0].files[0].name))) {
+                alert('Only PDF files can be published.');
+                e.preventDefault();
+            }
+        })
+    })
+</script>
 </body>
 </html>
