@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memonymous</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Maven+Pro:wght@400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+  /* ---- matches the repo's style.css look: Google Sans, dark nav, green accents ---- */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #ffffff; color: #1a1a1a;
+    font-family: "Google Sans", sans-serif; font-weight: 300;
+  }
+  nav ul {
+    list-style-type: none; margin: 0; padding: 0; overflow: hidden;
+    background-color: #333333; position: sticky; top: 0; z-index: 5;
+  }
+  nav li { float: left; }
+  nav li a {
+    display: block; color: white; text-align: center; padding: 14px 16px;
+    text-decoration: none; cursor: pointer;
+  }
+  nav li a p { font-family: "Google Sans", sans-serif; font-weight: 300; font-size: 180%; margin: 0; padding: 0; }
+  nav li a:hover { background-color: #dddddd; color: #333333; }
+  nav li a.active { background-color: #04AA6D; }
+  nav li a.active:hover { background-color: #04AA6D; color: white; }
+
+  main { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  p { font-family: "Google Sans", sans-serif; font-weight: 300; text-align: center; margin: 0; }
+  .space { margin-top: 5%; }
+  .welcome { font-size: 200%; }
+  .heading { text-align: center; font-weight: 700; font-size: 320%; color: forestgreen; margin: 6% 0 2%; }
+  .subtext { font-size: 150%; color: #555; margin-bottom: 4%; }
+
+  .button-link {
+    padding: 10px 20px; background-color: #04AA6D; color: white; text-decoration: none;
+    font-family: "Google Sans", sans-serif; font-weight: 300; font-size: 200%;
+    text-align: center; display: flex; justify-content: center; align-items: center;
+    border: none; cursor: pointer; margin: 4% auto 0; width: 60%; border-radius: 4px;
+  }
+  .button-link:hover { background-color: forestgreen; }
+  .button-link.small { font-size: 120%; width: auto; display: inline-flex; padding: 8px 18px; margin: 0; }
+  .button-link.grey { background-color: #777; }
+  .button-link.grey:hover { background-color: #555; }
+  .button-link.red { background-color: #c0392b; }
+  .button-link.red:hover { background-color: #922b21; }
+
+  form { text-align: center; }
+  label p { font-size: 150%; margin: 5% 0 1%; }
+  input[type=text], textarea {
+    width: 80%; font-family: "Google Sans", sans-serif; font-size: 130%; padding: 12px;
+    border: 2px solid #ccc; border-radius: 6px; display: block; margin: 0 auto;
+  }
+  input[type=text]:focus, textarea:focus { outline: none; border-color: #04AA6D; }
+  textarea { min-height: 220px; line-height: 1.5; resize: vertical; }
+
+  .card {
+    border: 2px solid #e2e2e2; border-radius: 10px; padding: 20px 26px; margin: 4% auto;
+    max-width: 760px; text-align: left;
+  }
+  .card h3 { font-family: "Google Sans", sans-serif; font-weight: 700; font-size: 180%; margin: 0 0 6px; color: #222; }
+  .card .meta { font-family: "Google Sans", sans-serif; color: #888; font-size: 105%; margin-bottom: 12px; }
+  .card .body { font-family: "Google Sans", sans-serif; font-weight: 300; font-size: 130%; white-space: pre-wrap; text-align: left; line-height: 1.5; }
+  .card .row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .empty { text-align: center; font-size: 150%; color: #999; margin: 8% 0; }
+
+  .badge {
+    background: #04AA6D; color: white; border-radius: 999px; font-size: 60%;
+    padding: 2px 9px; vertical-align: middle; margin-left: 6px;
+  }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-top: 4%; }
+  .stat { border: 2px solid #e2e2e2; border-radius: 10px; padding: 22px; text-align: center; }
+  .stat .n { font-size: 320%; color: #04AA6D; font-weight: 700; }
+  .stat .l { font-size: 120%; color: #777; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: #04AA6D; color: white; padding: 14px 24px; border-radius: 6px;
+    font-size: 130%; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 20;
+  }
+  .toast.show { opacity: 1; }
+  footer { text-align: center; color: #aaa; font-size: 95%; padding: 30px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a data-view="home" class="active"><p>Home</p></a></li>
+    <li><a data-view="read"><p>Read</p></a></li>
+    <li><a data-view="write"><p>Submit a Memoir</p></a></li>
+    <li><a data-view="mod"><p>Moderation</p></a></li>
+    <li><a data-view="stats"><p>Analytics</p></a></li>
+    <li><a data-view="about"><p>About</p></a></li>
+  </ul>
+</nav>
+
+<main>
+  <!-- HOME -->
+  <section id="home" class="view active">
+    <p class="space welcome">
+      Welcome to Memonymous! Here, you can publish memoirs anonymously or read published memoirs.
+    </p>
+    <button class="button-link" data-view="write">Submit a Memoir</button>
+    <button class="button-link grey" data-view="read" style="margin-top:2%;">Read Memoirs</button>
+  </section>
+
+  <!-- READ -->
+  <section id="read" class="view">
+    <p class="heading">Published Memoirs</p>
+    <p class="subtext">Anonymous stories, approved by our moderators.</p>
+    <div id="feed"></div>
+  </section>
+
+  <!-- WRITE -->
+  <section id="write" class="view">
+    <p class="heading">Share a Memoir</p>
+    <p class="subtext">Fully anonymous — nothing identifies you. It appears once a moderator approves it.</p>
+    <form onsubmit="return false;">
+      <label for="title"><p>Title</p></label>
+      <input type="text" id="title" maxlength="200" placeholder="A title for your story">
+      <label for="body"><p>Your Story</p></label>
+      <textarea id="body" maxlength="100000" placeholder="Write freely…"></textarea>
+      <button class="button-link" id="submitBtn">Upload</button>
+    </form>
+  </section>
+
+  <!-- MODERATION -->
+  <section id="mod" class="view">
+    <p class="heading">Moderation Queue</p>
+    <p class="subtext">Pending submissions — approve to publish, reject to discard.</p>
+    <div id="queue"></div>
+    <p class="heading" style="font-size:240%; margin-top:8%;">Published (live)</p>
+    <p class="subtext">Take any published memoir down if needed.</p>
+    <div id="modPublished"></div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats" class="view">
+    <p class="heading">Analytics</p>
+    <p class="subtext">Activity across the site.</p>
+    <div class="stats" id="statGrid"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="view">
+    <p class="space welcome">
+      Memonymous was created by a group of Grade 8 students who believe that anybody should be
+      able to share their own story for free and anonymously. We understand that this may not be
+      easily possible, but the action that we determined can most easily provide this to the
+      greatest amount of people is to publish this website online.
+    </p>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<footer>Local demo · data is stored only in this browser · clears if you clear site data</footer>
+
+<script>
+const KEY = "memonymous_demo_v2";
+let state = load();
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || base(); } catch { return base(); } }
+function base(){ return { memoirs: [], metrics: { submissions:0, approvals:0, rejections:0, views:0 } }; }
+function persist(){ localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+
+const $ = s => document.querySelector(s);
+const fmt = ts => new Date(ts).toLocaleString();
+const id = () => crypto.getRandomValues(new Uint8Array(8)).reduce((a,b)=>a+b.toString(16).padStart(2,"0"),"");
+async function sha256(str){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+function esc(s){ return s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1900); }
+
+async function submitMemoir(){
+  const title = $("#title").value.trim();
+  const body = $("#body").value.trim();
+  if(!title){ toast("Add a title"); return; }
+  if(!body){ toast("Write something first"); return; }
+  const hash = await sha256(body);
+  if(state.memoirs.some(m=>m.contentHash===hash && (m.status==="pending"||m.status==="approved"))){ toast("An identical memoir already exists"); return; }
+  state.memoirs.push({ id:id(), title, body, contentHash:hash, status:"pending", createdAt:Date.now(), publishedAt:null, views:0 });
+  state.metrics.submissions++;
+  $("#title").value=""; $("#body").value="";
+  persist(); toast("Submitted for moderation"); show("mod");
+}
+function decide(mid, action){
+  const m = state.memoirs.find(x=>x.id===mid); if(!m) return;
+  if(action==="approve"){ m.status="approved"; m.publishedAt=Date.now(); state.metrics.approvals++; toast("Published"); }
+  else if(action==="reject"){ m.status="rejected"; state.metrics.rejections++; toast("Rejected"); }
+  else if(action==="remove"){ m.status="removed"; toast("Removed"); }
+  persist();
+}
+function readMemoir(mid){ const m=state.memoirs.find(x=>x.id===mid); if(!m) return; m.views++; state.metrics.views++; persist(); }
+
+function render(){
+  const approved = state.memoirs.filter(m=>m.status==="approved").sort((a,b)=>b.publishedAt-a.publishedAt);
+  const pending = state.memoirs.filter(m=>m.status==="pending").sort((a,b)=>a.createdAt-b.createdAt);
+
+  $("#feed").innerHTML = approved.length ? approved.map(m=>`
+    <div class="card">
+      <h3>${esc(m.title)}</h3>
+      <div class="meta">Published ${fmt(m.publishedAt)} · ${m.views} view${m.views===1?"":"s"}</div>
+      <div class="body">${esc(m.body)}</div>
+      <div class="row"><button class="button-link grey small" onclick="readMemoir('${m.id}')">Count a read +1</button></div>
+    </div>`).join("") : `<div class="empty">No published memoirs yet. Submit one, then approve it in Moderation.</div>`;
+
+  $("#queue").innerHTML = pending.length ? pending.map(m=>`
+    <div class="card">
+      <h3>${esc(m.title)}</h3>
+      <div class="meta">Submitted ${fmt(m.createdAt)}</div>
+      <div class="body">${esc(m.body)}</div>
+      <div class="row">
+        <button class="button-link small" onclick="decide('${m.id}','approve')">Approve</button>
+        <button class="button-link red small" onclick="decide('${m.id}','reject')">Reject</button>
+      </div>
+    </div>`).join("") : `<div class="empty">Queue is empty.</div>`;
+
+  $("#modPublished").innerHTML = approved.length ? approved.map(m=>`
+    <div class="card">
+      <h3>${esc(m.title)} <span class="badge">${m.views} views</span></h3>
+      <div class="row"><button class="button-link red small" onclick="decide('${m.id}','remove')">Remove</button></div>
+    </div>`).join("") : `<div class="empty">Nothing published yet.</div>`;
+
+  const grid = [
+    ["Submissions", state.metrics.submissions],
+    ["Published", approved.length],
+    ["Pending", pending.length],
+    ["Rejected", state.metrics.rejections],
+    ["Total views", state.metrics.views],
+    ["Removed", state.memoirs.filter(m=>m.status==="removed").length],
+  ];
+  $("#statGrid").innerHTML = grid.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+
+  document.querySelectorAll('nav a[data-view="mod"] p').forEach(p=>{
+    p.innerHTML = pending.length ? `Moderation <span class="badge">${pending.length}</span>` : "Moderation";
+  });
+}
+
+function show(v){
+  document.querySelectorAll(".view").forEach(el=>el.classList.toggle("active", el.id===v));
+  document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("active", a.dataset.view===v));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-view]").forEach(el=>el.addEventListener("click", ()=>show(el.dataset.view)));
+$("#submitBtn").addEventListener("click", submitMemoir);
+render();
+</script>
+</body>
+</html>
