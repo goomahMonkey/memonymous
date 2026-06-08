@@ -1,0 +1,32 @@
+name = "anon-memoirs-backend"
+main = "src/index.ts"
+compatibility_date = "2024-05-12"
+compatibility_flags = ["nodejs_compat"]
+
+# ---- Secrets (set with: wrangler secret put <NAME>) ----
+# MOD_API_KEY  -> bearer token moderators use to access the moderation API
+# GLOBAL_PEPPER -> server-side secret mixed into author-token hashing
+
+[vars]
+# Number of pending memoirs returned per moderation page
+MOD_PAGE_SIZE = "25"
+
+# ---- D1: queryable memoir + moderation storage ----
+[[d1_databases]]
+binding = "DB"
+database_name = "memoirs_db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+# ---- Durable Objects ----
+[[durable_objects.bindings]]
+name = "MEMOIR_STATS"
+class_name = "MemoirStats"
+
+[[durable_objects.bindings]]
+name = "MOD_QUEUE"
+class_name = "ModerationQueue"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MemoirStats", "ModerationQueue"]
